@@ -9,7 +9,7 @@ pipeline {
     stage('Docker build') {
       steps {
         script {
-          docker.build("NovelsHiveAPI")
+          docker.build("novelshiveapi")
         }
       }
     }
