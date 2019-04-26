@@ -16,7 +16,7 @@ pipeline {
     stage('deployment') {
       steps {
         script {
-          docker.withRegistry("https://499596517866.dkr.ecr.eu-west-3.amazonaws.com/NovelsHiveAPI", "ecr:eu-west-3:aws") {
+          docker.withRegistry("https://499596517866.dkr.ecr.eu-west-3.amazonaws.com/novelshiveapi", "ecr:eu-west-3:aws") {
             docker.image("NovelsHiveAPI").push()
           }
         }
