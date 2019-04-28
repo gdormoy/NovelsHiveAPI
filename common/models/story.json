@@ -1,0 +1,94 @@
+{
+  "name": "Story",
+  "plural": "stories",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "publication_date": {
+      "type": "date"
+    },
+    "update_date": {
+      "type": "date"
+    },
+    "title": {
+      "type": "string"
+    },
+    "synopsis": {
+      "type": "buffer"
+    },
+    "panel": {
+      "type": "string",
+      "default": null
+    }
+  },
+  "validations": [],
+  "relations": {
+    "favorites": {
+      "type": "hasMany",
+      "model": "Favorite",
+      "foreignKey": ""
+    },
+    "betaReaders": {
+      "type": "hasMany",
+      "model": "Beta_reader",
+      "foreignKey": ""
+    },
+    "ranks": {
+      "type": "hasMany",
+      "model": "Rank",
+      "foreignKey": ""
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": ""
+    },
+    "storyChapters": {
+      "type": "hasMany",
+      "model": "Story_chapter",
+      "foreignKey": ""
+    },
+    "storyStatus": {
+      "type": "belongsTo",
+      "model": "Story_status",
+      "foreignKey": ""
+    },
+    "language": {
+      "type": "belongsTo",
+      "model": "Language",
+      "foreignKey": ""
+    },
+    "storyKind": {
+      "type": "belongsTo",
+      "model": "Story_kind",
+      "foreignKey": ""
+    },
+    "storyRating": {
+      "type": "belongsTo",
+      "model": "Story_rating",
+      "foreignKey": ""
+    },
+    "universe": {
+      "type": "belongsTo",
+      "model": "Universe",
+      "foreignKey": ""
+    },
+    "storyHasStoryTags": {
+      "type": "hasMany",
+      "model": "Story_has_story_tag",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

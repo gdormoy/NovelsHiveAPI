@@ -1,0 +1,71 @@
+{
+  "name": "user",
+  "plural": "users",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "description": {
+      "type": "buffer"
+    },
+    "email": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    },
+    "admin": {
+      "type": "boolean",
+      "default": false
+    },
+    "font_size": {
+      "type": "number",
+      "default": 11
+    },
+    "font_family": {
+      "type": "string",
+      "default": "Arial"
+    },
+    "theme": {
+      "type": "string",
+      "default": "light"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "favorites": {
+      "type": "hasMany",
+      "model": "Favorite",
+      "foreignKey": ""
+    },
+    "betaReaders": {
+      "type": "hasMany",
+      "model": "Beta_reader",
+      "foreignKey": ""
+    },
+    "ranks": {
+      "type": "hasMany",
+      "model": "Rank",
+      "foreignKey": ""
+    },
+    "stories": {
+      "type": "hasMany",
+      "model": "Story",
+      "foreignKey": ""
+    },
+    "publishedCommentaries": {
+      "type": "hasMany",
+      "model": "Published_commentary",
+      "foreignKey": ""
+    },
+    "draftCommentaries": {
+      "type": "hasMany",
+      "model": "Draft_commentary",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

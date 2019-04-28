@@ -7,7 +7,21 @@ module.exports = function enableAuthentication(server, cb) {
     'ACL',
     'AccessToken',
     'Role',
-    'User'
+    'user',
+    'Story',
+    'Favorite',
+    'Story_status',
+    'Beta_reader',
+    'Rank',
+    'Story_chapter',
+    'Draft_commentary',
+    'Published_commentary',
+    'Language',
+    'Story_kind',
+    'Story_rating',
+    'Universe',
+    'Story_tag',
+    'Story_has_story_tag'
   ];
 
   ds.setMaxListeners(Infinity);

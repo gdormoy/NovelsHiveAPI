@@ -35,5 +35,65 @@
   "Role": {
     "dataSource": "mysql",
     "public": false
+  },
+  "user": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Favorite": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story_status": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Beta_reader": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Rank": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story_chapter": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Draft_commentary": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Published_commentary": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Language": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story_kind": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story_rating": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Universe": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story_tag": {
+    "dataSource": "mysql",
+    "public": true
+  },
+  "Story_has_story_tag": {
+    "dataSource": "mysql",
+    "public": true
   }
 }

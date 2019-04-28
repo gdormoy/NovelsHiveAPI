@@ -1,0 +1,54 @@
+{
+  "name": "Story_chapter",
+  "plural": "chapters",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "buffer"
+    },
+    "update_date": {
+      "type": "date"
+    },
+    "online": {
+      "type": "boolean",
+      "default": false
+    },
+    "number": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "publishedCommentaries": {
+      "type": "hasMany",
+      "model": "Published_commentary",
+      "foreignKey": ""
+    },
+    "draftCommentaries": {
+      "type": "hasMany",
+      "model": "Draft_commentary",
+      "foreignKey": ""
+    },
+    "story": {
+      "type": "belongsTo",
+      "model": "Story",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}
