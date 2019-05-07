@@ -1,6 +1,7 @@
-FROM node:latest
-#ADD ./NovelsHiveAPI /home/NovelsHiveAPI
-EXPOSE 3000
+FROM node:8
+WORKDIR /app
+COPY package.json /app
 RUN npm install
-#RUN npm start
-#CMD ["node", "/opt/src/index.js"]
+COPY . /app
+EXPOSE 3000
+CMD npm start
