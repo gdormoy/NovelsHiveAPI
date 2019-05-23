@@ -8,5 +8,21 @@
     "name": "mysql",
     "user": "root",
     "connector": "mysql"
+  },
+  "gmailMailer": {
+    "name": "gmailMailer",
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "noreply.novelshive@gmail.com",
+          "pass": "M9H4cjb8"
+        }
+      }
+    ],
+    "connector": "mail"
   }
 }

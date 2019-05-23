@@ -15,7 +15,13 @@
   },
   "User": {
     "dataSource": "mysql",
-    "public": false
+    "public": false,
+    "options": {
+      "emailVerificationRequired": true
+    }
+  },
+  "Email": {
+    "dataSource": "gmailMailer"
   },
   "AccessToken": {
     "dataSource": "mysql",
