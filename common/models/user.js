@@ -1,5 +1,7 @@
 'use strict';
 
+let app = require('../../server/server');
+
 module.exports = function(User) {
   User.afterRemote('create', function(context, userInstance, next) {
     let options = {
@@ -7,7 +9,8 @@ module.exports = function(User) {
       to: userInstance.email,
       from: 'noreply@novelshive.com',
       subject: 'Thanks for registering.',
-      user: User
+      user: User,
+      redirect: app.get('novelshiveWebsite') + 'HelloWorld'
     };
 
     userInstance.verify(options, function(err, response, next) {
