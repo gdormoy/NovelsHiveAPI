@@ -3,6 +3,12 @@ node_js:
   - 8
 services:
   - docker
+env:
+  global:
+  - EB_REGION="eu-west-3"
+  - secure: travisEncryptedAWS_ACCOUNT_ID
+  - secure: travisEncryptedAWS_ACCESS_KEY_ID
+  - secure: travisEncryptedAWS_SECRET_ACCESS_KEY
 before_install:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
@@ -10,5 +16,7 @@ before_script:
   - npm install
 script:
   - eval $(aws ecr get-login --region eu-west-3)
-  - aws ecr batch-delete-image --repository-name eu-west-3 --image-ids imageTag=latest
+  - aws ecr batch-delete-image --repository-name novelshiveapi --image-ids imageTag=latest
   - docker build -t novelshiveapi:latest .
+  - docker tag novelshiveapi:latest 499596517866.dkr.ecr.eu-west-3.amazonaws.com/novelshiveapi:latest
+  -docker push 499596517866.dkr.ecr.eu-west-3.amazonaws.com/novelshiveapi:latest
