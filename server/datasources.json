@@ -1,12 +1,12 @@
 {
   "mysql": {
-    "host": "127.0.0.1",
+    "host": "novelhivedb.chpdhuunxbev.eu-west-3.rds.amazonaws.com",
     "port": 3306,
     "url": "",
     "database": "novels_hive",
-    "password": "root",
+    "password": "novelhivepwd",
     "name": "mysql",
-    "user": "root",
+    "user": "UserNHDB",
     "connector": "mysql"
   },
   "gmailMailer": {
