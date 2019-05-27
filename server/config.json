@@ -2,7 +2,7 @@
   "novelshiveWebsite": "http://www.localhost:8080/#/",
   "restApiRoot": "/api",
   "host": "localhost",
-  "port": 3000,
+  "port": 8080,
   "remoting": {
     "context": false,
     "rest": {
