@@ -1,1 +1,14 @@
 language: node_js
+node_js:
+  - 8
+services:
+  - docker
+before_install:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+before_script:
+  - npm install
+script:
+  - eval $(aws ecr get-login --region eu-west-3)
+  - aws ecr batch-delete-image --repository-name eu-west-3 --image-ids imageTag=latest
+  - docker build -t novelshiveapi:latest .
