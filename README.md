@@ -21,3 +21,5 @@ You can found the loopback documentation [here](https://loopback.io/getting-star
 - Create a mysql database with the name `novels_hive`.
 - Change the credentials of the database in the file `.\server\datasources.json`.
 - Install the dependencies using the command `npm install`.
+- Copy the file `server/config.local.sample.js` to `server/config.local.js` and fill it with you local settings. 
+If you feel lost, you can cry and ask for some help.
