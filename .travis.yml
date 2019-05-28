@@ -11,10 +11,11 @@ env:
   - secure: travisEncryptedAWS_SECRET_ACCESS_KEY
 before_install:
   - pip install --user awscli
-  - export PATH=$PATH:$HOME/.local/bin  
+  - export PATH=$PATH:$HOME/.local/bin
 before_script:
   - npm install
 script:
+  - aws s3 cp s3://novelshive-config/datasources.json ./server/datasources.json
   - eval $(aws ecr get-login --region eu-west-3 --no-include-email)
   - aws ecr batch-delete-image --repository-name novelshiveapi --image-ids imageTag=latest
   - docker build -t novelshiveapi:latest .
