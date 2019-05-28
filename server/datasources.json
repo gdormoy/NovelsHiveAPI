@@ -3,7 +3,7 @@
     "host": "novelhivedb.chpdhuunxbev.eu-west-3.rds.amazonaws.com",
     "port": 3306,
     "url": "",
-    "database": "novels_hive",
+    "database": "novelhivedb",
     "password": "novelhivepwd",
     "name": "mysql",
     "user": "UserNHDB",
