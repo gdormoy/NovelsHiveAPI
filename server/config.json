@@ -1,5 +1,5 @@
 {
-  "novelshiveWebsite": "http://www.localhost:8080/#/",
+  "novelshiveWebsite": "http://www.localhost:8080/#",
   "restApiRoot": "/api",
   "host": "0.0.0.0",
   "port": 3000,

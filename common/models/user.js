@@ -10,7 +10,7 @@ module.exports = function(User) {
       from: 'noreply@novelshive.com',
       subject: 'Thanks for registering.',
       user: User,
-      redirect: app.get('novelshiveWebsite') + 'HelloWorld'
+      redirect: app.get('novelshiveWebsite') + '/login',
     };
 
     userInstance.verify(options, function(err, response, next) {
