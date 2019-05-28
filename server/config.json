@@ -1,7 +1,7 @@
 {
   "novelshiveWebsite": "http://www.localhost:8080/#",
   "restApiRoot": "/api",
-  "host": "ECS-first-run-alb-113054812.eu-west-3.elb.amazonaws.com",
+  "host": "http://ECS-first-run-alb-113054812.eu-west-3.elb.amazonaws.com",
   "port": 3000,
   "remoting": {
     "context": false,
