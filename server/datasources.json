@@ -1,12 +1,12 @@
 {
   "mysql": {
-    "host": "novelhivedb.chpdhuunxbev.eu-west-3.rds.amazonaws.com",
+    "host": "localhost",
     "port": 3306,
     "url": "",
-    "database": "novelhivedb",
-    "password": "novelhivepwd",
+    "database": "novelshivedb",
+    "password": "root",
     "name": "mysql",
-    "user": "UserNHDB",
+    "user": "root",
     "connector": "mysql"
   },
   "gmailMailer": {
@@ -18,8 +18,8 @@
         "secure": true,
         "port": 465,
         "auth": {
-          "user": "noreply.novelshive@gmail.com",
-          "pass": "M9H4cjb8"
+          "user": "",
+          "pass": ""
         }
       }
     ],

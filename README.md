@@ -23,3 +23,4 @@ You can found the loopback documentation [here](https://loopback.io/getting-star
 - Install the dependencies using the command `npm install`.
 - Copy the file `server/config.local.sample.js` to `server/config.local.js` and fill it with you local settings. 
 If you feel lost, you can cry and ask for some help.
+- Do the same with the file `server/datasources.local.sample.js` => `server/datasources.local.js`
