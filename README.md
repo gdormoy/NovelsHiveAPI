@@ -24,3 +24,17 @@ You can found the loopback documentation [here](https://loopback.io/getting-star
 - Copy the file `server/config.local.sample.js` to `server/config.local.js` and fill it with you local settings. 
 If you feel lost, you can cry and ask for some help.
 - Do the same with the file `server/datasources.local.sample.js` => `server/datasources.local.js`
+
+Now you can run the project with the script run in `package.json`.
+
+If you encounter the following error message while starting the application `ER_NOT_SUPPORTED_AUTH_MODE: Client does not
+ support authentication protocol requested by server; consider upgrading MySQL client`:
+ - Go to your MySQL database manager.
+ - Open a script page
+ - Execute the following script :
+ ```sql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YOUR_PASSWORD';
+flush privileges;
+```
+
+The application should be ready to run !
