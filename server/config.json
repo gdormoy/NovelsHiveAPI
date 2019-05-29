@@ -1,6 +1,6 @@
 {
   "novelshiveWebsite": "http://www.localhost:8080/#",
-  "applicationURL": "http://www.localhost:3000",
+  "applicationURL": "www.localhost",
   "port": 3000,
   "restApiRoot": "/api",
   "host": "0.0.0.0",
