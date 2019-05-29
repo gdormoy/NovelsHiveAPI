@@ -28,7 +28,10 @@ module.exports = function(User) {
     };
 
     userInstance.verify(options, function(err, response, next) {
-      if (err) return next(err);
+      if (err) {
+        console.log(err);
+        return next(err);
+      }
       console.log('> verification email sent');
     });
 
