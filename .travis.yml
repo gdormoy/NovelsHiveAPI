@@ -16,6 +16,7 @@ before_script:
   - npm install
 script:
   - aws s3 cp s3://novelshive-config/datasources.json ./server/datasources.json
+  - aws s3 cp s3://novelshive-config/config.json ./server/config.json
   - eval $(aws ecr get-login --region eu-west-3 --no-include-email)
   - aws ecr batch-delete-image --repository-name novelshiveapi --image-ids imageTag=latest
   - docker build -t novelshiveapi:latest .
