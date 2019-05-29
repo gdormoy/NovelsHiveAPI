@@ -7,4 +7,5 @@ module.exports = {
   restApiRoot: DEFAULT_CONFIG.restApiRoot,
   host: DEFAULT_CONFIG.host,
   port: DEFAULT_CONFIG.port,
+  applicationURL: DEFAULT_CONFIG.applicationURL
 };
