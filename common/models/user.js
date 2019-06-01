@@ -30,4 +30,19 @@ module.exports = function(User) {
 
     next();
   });
+
+  User.getChapters = function(id, cb) {
+    console.log('id : ' + id);
+    User.findById(id, {include: {stories: 'storyChapters'}}, function(err, instance) {
+      console.log(instance);
+      cb(null, instance);
+    })
+  };
+
+  User.remoteMethod('getChapters', {
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
+    returns: {arg: 'chapters', type: 'string'},
+    http: {path: '/:id/chapters', verb: 'get'},
+    description: 'Récupère les chapitres écrits par un utilisateur'
+  })
 };
