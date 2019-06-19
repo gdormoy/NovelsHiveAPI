@@ -3,6 +3,7 @@
 let app = require('../../server/server');
 let loopback = require('loopback');
 let path = require('path');
+let pdf = require('html-pdf');
 
 module.exports = function(User) {
   User.afterRemote('create', function(context, userInstance, next) {
@@ -49,6 +50,84 @@ module.exports = function(User) {
     description: 'Récupère les chapitres écrits par un utilisateur',
   });
 
+  User.convertJsonIntoHtml = function(jsonObject) {
+    let htmlToJson = '<!doctype html>' +
+      '<html>' +
+        '<body>' +
+          '<div style="text-align: center">' +
+            '<h1>GDPR Informations</h1>' +
+          '</div>' +
+          '<div>' +
+            '<table style="font-size: 1.5em; margin-left: 25px" cellspacing="10">' +
+              '<tr>' +
+                '<td width=150>' +
+                  'Username:' +
+                '</td>' +
+                '<td>' +
+                  jsonObject.username +
+                '</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td width=150>' +
+                  'Email:' +
+                '</td>' +
+                '<td>' +
+                  jsonObject.email +
+                '</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td width=150>' +
+                  'Description:' +
+                '</td>' +
+                '<td>' +
+                  jsonObject.description +
+                '</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td>' +
+                  'Strories: ' +
+                '</td>' +
+              '</tr>' +
+              '<tr>' +
+              '<td></td>' +
+              '<td><table cellspacing="10">';
+
+    for (let counter = 0; counter < jsonObject.stories.length; counter++) {
+      htmlToJson += '' +
+        '<tr>' +
+          '<td>Title:</td>' +
+          '<td>' + jsonObject.stories[counter].title + '</td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td>Publication Date:</td>' +
+          '<td>' + jsonObject.stories[counter].publication_date + '</td>' +
+        '</tr>';
+    }
+
+    htmlToJson += '</table></td></tr>' +
+      '<tr>' +
+        '<td>Comments:</td>' +
+      '</tr>' +
+      '<tr>' +
+      '<td></td>' +
+      '<td><table cellspacing="10">';
+
+    for (let counter2 = 0; counter2 < jsonObject.publishedCommentaries.length; counter2++) {
+      htmlToJson += '' +
+        '<tr>' +
+          '<td>Comment:</td>' +
+          '<td>' + jsonObject.publishedCommentaries[counter2].text + '</td>' +
+        '</tr>';
+    }
+
+    htmlToJson += '</table></td></tr>' +
+      '</table>' +
+      '</div>' +
+      '</body>' +
+      '</html>';
+    return htmlToJson;
+  };
+
   /**
    * @param id
    * @param cb
@@ -58,8 +137,17 @@ module.exports = function(User) {
     // eslint-disable-next-line max-len
     User.findById(id, {include: ['stories', 'publishedCommentaries']}, function(err, instance) {
       let tmp = {};
-      let jsonStr = ''
+      let jsonStr = '';
       let result = {};
+      let htmlResult = '';
+      let pathOutputFile = './storage/';
+      let config = {format: 'A4'};
+      let ds = loopback.createDataSource({
+        connector: require('loopback-component-storage'),
+        provider: 'filesystem',
+        root: path.join(__dirname, 'storage'),
+      });
+      let container = '';
       tmp['user'] = instance;
       jsonStr = JSON.stringify(tmp)
       result = JSON.parse(jsonStr)
@@ -70,14 +158,23 @@ module.exports = function(User) {
       result.user.publishedCommentaries.forEach(function(comment) {
         comment.text = Buffer.from(comment.text.data).toString('ascii')
       })
-      cb(null, result.user);
+      pathOutputFile += result.user.username + '.pdf';
+      htmlResult = User.convertJsonIntoHtml(result.user)
+      pdf.create(htmlResult, config).toFile(pathOutputFile, function(err, res) {
+        if (err) return console.log(err);
+        console.log(res);
+      })
+      cb(null, htmlResult, 'application/pdf');
     });
   };
 
   User.remoteMethod('getGDPRInformations', {
     // eslint-disable-next-line max-len
     accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
-    returns: {arg: 'data', type: 'string'},
+    returns: [
+      {arg: 'body', type: 'file', root: true},
+      {arg: 'Content-Type', type: 'string', http: {target: 'header'}}
+    ],
     http: {path: '/:id/gdpr', verb: 'get'},
     description: 'Récupère toutes les information d\'un utilisateur',
   });
