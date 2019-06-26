@@ -142,21 +142,20 @@ module.exports = function(User) {
       let htmlResult = '';
       let pathOutputFile = './storage/';
       let config = {format: 'A4'};
-      let ds = loopback.createDataSource({
-        connector: require('loopback-component-storage'),
-        provider: 'filesystem',
-        root: path.join(__dirname, 'storage'),
-      });
-      let container = '';
+      // let ds = loopback.createDataSource({
+      //   connector: require('loopback-component-storage'),
+      //   provider: 'filesystem',
+      //   root: path.join(__dirname, 'storage'),
+      // });
       tmp['user'] = instance;
       jsonStr = JSON.stringify(tmp)
-      result = JSON.parse(jsonStr)
-      result.user.description = Buffer.from(result.user.description.data).toString('ascii')
+      result = JSON.parse(jsonStr);
+      result.user.description = Buffer.from(result.user.description.data).toString('ascii');
       result.user.stories.forEach(function(story) {
         story.synopsis = Buffer.from(story.synopsis.data).toString('ascii');
       });
       result.user.publishedCommentaries.forEach(function(comment) {
-        comment.text = Buffer.from(comment.text.data).toString('ascii')
+        comment.text = Buffer.from(comment.text.data).toString('ascii');
       })
       pathOutputFile += result.user.username + '.pdf';
       htmlResult = User.convertJsonIntoHtml(result.user)
@@ -164,18 +163,30 @@ module.exports = function(User) {
         if (err) return console.log(err);
         console.log(res);
       })
-      cb(null, htmlResult, 'application/pdf');
+      cb(null, result, 'application/pdf');
     });
   };
 
   User.remoteMethod('getGDPRInformations', {
     // eslint-disable-next-line max-len
     accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
-    returns: [
-      {arg: 'body', type: 'file', root: true},
-      {arg: 'Content-Type', type: 'string', http: {target: 'header'}}
-    ],
+    returns: {arg: 'body', type: 'string', root: true},
     http: {path: '/:id/gdpr', verb: 'get'},
     description: 'Récupère toutes les information d\'un utilisateur',
+  });
+
+  User.afterRemote('getGDPRInformations', function (context, userInstance, next) {
+    console.log(userInstance.user)
+    User.app.models.Email.send({
+      to: userInstance.user.email,
+      from: 'noreply@novelshive.com', // TODO : Refer to the config email address
+      subject: 'NovelHive information.',
+      attachments: [
+        {
+          filename: 'NovelHive Informations.pdf',
+          path: './storage/' + userInstance.user.username + '.pdf', // stream this file
+        },
+      ],
+    });
   });
 };
