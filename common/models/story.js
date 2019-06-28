@@ -12,17 +12,12 @@ module.exports = function(Story) {
     };
 
     Story.find(requestFilter, function(err, instance) {
-      console.log(instance);
-      console.log(instance.length)
-
       if (instance.length > 0) {
-        console.log("Returning an error");
         let error = new Error("A story with title '" + requestParams.title + "' for userId '" + requestParams.userId
           + "' already exists");
         error.statusCode = 409;
         return next(error);
       }else{
-        console.log("Continuing to creation");
         next()
       }
     });
