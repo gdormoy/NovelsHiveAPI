@@ -18,5 +18,32 @@ module.exports = function(Storychapter) {
       context.args.data = params;
       next();
     });
-  })
+  });
+
+  Storychapter.getChaptersForReading = function (id, cb) {
+    Storychapter.findById(id, {include: {story: 'storyChapters'}}, function(err, data) {
+      let instance = data.toJSON();
+
+      let result = {};
+      result.title = instance.title;
+      result.text = instance.text;
+      result.storyTitle = instance.story.title;
+
+      result.previousChapter = {};
+      result.nextChapter = {};
+
+      result.previousChapter.id = instance.number === 1 ? null : instance.story.storyChapters[parseInt(instance.number) - 2].id;
+      let nextChapter = instance.story.storyChapters[parseInt(instance.number)];
+      result.nextChapter.id = nextChapter === undefined ? null : nextChapter.id;
+
+      cb(null, result);
+    })
+  };
+
+  Storychapter.remoteMethod('getChaptersForReading', {
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the chapter to read'},
+    returns: {arg: 'chapter', type: 'string'},
+    http: {path: '/:id/read', verb: 'get'},
+    description: 'Récupère le chapitre pour la lecture',
+  });
 };
