@@ -137,18 +137,14 @@ module.exports = function(User) {
     // eslint-disable-next-line max-len
     User.findById(id, {include: ['stories', 'publishedCommentaries']}, function(err, instance) {
       let tmp = {};
-      let jsonStr = '';
+      let jsonStr;
       let result = {};
-      let htmlResult = '';
+      let htmlResult;
       let pathOutputFile = './storage/';
       let config = {format: 'A4'};
-      // let ds = loopback.createDataSource({
-      //   connector: require('loopback-component-storage'),
-      //   provider: 'filesystem',
-      //   root: path.join(__dirname, 'storage'),
-      // });
+
       tmp['user'] = instance;
-      jsonStr = JSON.stringify(tmp)
+      jsonStr = JSON.stringify(tmp);
       result = JSON.parse(jsonStr);
       result.user.description = Buffer.from(result.user.description.data).toString('ascii');
       result.user.stories.forEach(function(story) {
@@ -156,9 +152,9 @@ module.exports = function(User) {
       });
       result.user.publishedCommentaries.forEach(function(comment) {
         comment.text = Buffer.from(comment.text.data).toString('ascii');
-      })
+      });
       pathOutputFile += result.user.username + '.pdf';
-      htmlResult = User.convertJsonIntoHtml(result.user)
+      htmlResult = User.convertJsonIntoHtml(result.user);
       pdf.create(htmlResult, config).toFile(pathOutputFile, function(err, res) {
         if (err) return console.log(err);
         console.log(res);
@@ -176,7 +172,7 @@ module.exports = function(User) {
   });
 
   User.afterRemote('getGDPRInformations', function (context, userInstance, next) {
-    console.log(userInstance.user)
+    console.log(userInstance.user);
     User.app.models.Email.send({
       to: userInstance.user.email,
       from: 'noreply@novelshive.com', // TODO : Refer to the config email address
