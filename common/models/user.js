@@ -162,8 +162,8 @@ module.exports = function(User) {
       pdf.create(htmlResult, config).toFile(pathOutputFile, function(err, res) {
         if (err) return console.log(err);
         console.log(res);
+        cb(null, result, 'application/pdf');
       })
-      cb(null, result, 'application/pdf');
     });
   };
 
