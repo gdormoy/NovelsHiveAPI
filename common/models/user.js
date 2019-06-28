@@ -189,4 +189,31 @@ module.exports = function(User) {
       ],
     });
   });
+
+  User.getFavoriteStories = function(id, cb) {
+    console.log('id : ' + id);
+    // eslint-disable-next-line max-len
+    User.findById(id, {include: {favorites: 'story'}}, function(err, instance) {
+      let tmp = {};
+      let jsonStr;
+      let result;
+      let stories = [];
+      tmp['user'] = instance;
+      jsonStr = JSON.stringify(tmp);
+      result = JSON.parse(jsonStr);
+      result.user.favorites.forEach(function(favorite) {
+        stories.push(favorite.story);
+      });
+      console.log(stories);
+      cb(null, stories);
+    });
+  };
+
+  User.remoteMethod('getFavoriteStories', {
+    // eslint-disable-next-line max-len
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
+    returns: {arg: 'stories', type: 'string'},
+    http: {path: '/:id/favoriteStories', verb: 'get'},
+    description: 'Récupère les chapitres écrits par un utilisateur',
+  });
 };
