@@ -13,10 +13,13 @@
   },
   "validations": [],
   "relations": {
-    "story": {
-      "type": "belongsTo",
+    "stories": {
+      "type": "hasMany",
       "model": "Story",
-      "foreignKey": ""
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [
