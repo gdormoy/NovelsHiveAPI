@@ -200,7 +200,6 @@ module.exports = function(User) {
       result.user.favorites.forEach(function(favorite) {
         stories.push(favorite.story);
       });
-      console.log(stories);
       cb(null, stories);
     });
   };
@@ -210,6 +209,6 @@ module.exports = function(User) {
     accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
     returns: {arg: 'stories', type: 'string'},
     http: {path: '/:id/favoriteStories', verb: 'get'},
-    description: 'Récupère les chapitres écrits par un utilisateur',
+    description: 'Récupère les histoires mises en favoris par un utilisateur',
   });
 };
