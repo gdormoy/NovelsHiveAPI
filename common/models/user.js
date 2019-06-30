@@ -187,7 +187,6 @@ module.exports = function(User) {
   });
 
   User.getFavoriteStories = function(id, cb) {
-    console.log('id : ' + id);
     // eslint-disable-next-line max-len
     User.findById(id, {include: {favorites: 'story'}}, function(err, instance) {
       let tmp = {};

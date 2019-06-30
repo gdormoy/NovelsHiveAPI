@@ -21,5 +21,30 @@ module.exports = function(Story) {
         next()
       }
     });
-  })
+  });
+
+  Story.getStoryTags = function(id, cb) {
+    // eslint-disable-next-line max-len
+    Story.findById(id, {include: {storyHasStoryTags: 'storyTag'}}, function(err, instance) {
+      let tmp = {};
+      let jsonStr;
+      let result;
+      let tags = [];
+      tmp['story'] = instance;
+      jsonStr = JSON.stringify(tmp);
+      result = JSON.parse(jsonStr);
+      result.story.storyHasStoryTags.forEach(function(storyTagLink) {
+        tags.push(storyTagLink.storyTag);
+      });
+      cb(null, tags);
+    });
+  };
+
+  Story.remoteMethod('getStoryTags', {
+    // eslint-disable-next-line max-len
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the story'},
+    returns: {arg: 'tags', type: 'string'},
+    http: {path: '/:id/storyTags', verb: 'get'},
+    description: 'Récupère les tags associés à une histoire',
+  });
 };
