@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(Storychapter) {
-  Storychapter.beforeRemote('create', function(context, storyChapterInstance, next) {
+  Storychapter.getChapterLocationInStory = function(context, storyChapterInstance, next) {
     let params = context.args.data;
 
     let filterParams = {
@@ -11,14 +11,26 @@ module.exports = function(Storychapter) {
     };
 
     Storychapter.find(filterParams, function (err, instance) {
-      console.log(instance);
-
-      params.number = instance.length + 1;
-
+      let counter = 0;
+      for (let i = 0; i < instance.length; ++i) {
+        if (instance[i].id !== params.id) {
+          ++counter;
+        }
+      }
+      params.number = counter + 1;
       context.args.data = params;
       next();
     });
+  };
+
+  Storychapter.beforeRemote('create', function(context, storyChapterInstance, next) {
+    Storychapter.getChapterLocationInStory(context, storyChapterInstance, next);
   });
+
+  Storychapter.beforeRemote('prototype.patchAttributes', function(context, storyChapterInstance, next) {
+    Storychapter.getChapterLocationInStory(context, storyChapterInstance, next);
+  });
+
 
   Storychapter.getChaptersForReading = function (id, cb) {
     Storychapter.findById(id, {include: {story: 'storyChapters'}}, function(err, data) {
