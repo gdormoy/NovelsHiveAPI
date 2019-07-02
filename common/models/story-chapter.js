@@ -66,7 +66,9 @@ module.exports = function(Storychapter) {
       data.publishedCommentaries().forEach((comment) => {
         let commentary = {};
 
+        commentary.id = comment.id;
         commentary.text = comment.text;
+        commentary.publication_date = comment.publication_date;
         commentary.username = comment.user().username;
         results.push(commentary);
       });

@@ -9,6 +9,9 @@
   "properties": {
     "text": {
       "type": "buffer"
+    },
+    "publication_date": {
+      "type": "date"
     }
   },
   "validations": [],
