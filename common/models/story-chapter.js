@@ -58,4 +58,27 @@ module.exports = function(Storychapter) {
     http: {path: '/:id/read', verb: 'get'},
     description: 'Récupère le chapitre pour la lecture',
   });
+
+  Storychapter.getChapterComments = function (id, cb) {
+    Storychapter.findById(id, {include: {publishedCommentaries: 'user'}}, function (err, data) {
+      let results = [];
+
+      data.publishedCommentaries().forEach((comment) => {
+        let commentary = {};
+
+        commentary.text = comment.text;
+        commentary.username = comment.user().username;
+        results.push(commentary);
+      });
+
+      cb(null, results);
+    })
+  };
+
+  Storychapter.remoteMethod('getChapterComments', {
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the chapter'},
+    returns: {arg: 'commentaries', type: 'string'},
+    http: {path: '/:id/publishedCommentaries', verb: 'get'},
+    description: 'Récupère les commentaires d\'un chapitre',
+  })
 };
