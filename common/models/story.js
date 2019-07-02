@@ -47,4 +47,21 @@ module.exports = function(Story) {
     http: {path: '/:id/storyTags', verb: 'get'},
     description: 'Récupère les tags associés à une histoire',
   });
+
+  Story.getStoryAndChaptersById = function (id, cb) {
+    console.log('Entering Story.getStoryAndChaptersById');
+    Story.findById(id, {include: {relation: 'storyChapters', scope: {where: {online: true}}}}, function (err, instance) {
+      console.log(instance);
+
+      cb(null, instance);
+    })
+  };
+
+  Story.remoteMethod('getStoryAndChaptersById', {
+    // eslint-disable-next-line max-len
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the story'},
+    returns: {arg: 'story', type: 'string'},
+    http: {path: '/:id/chapters', verb: 'get'},
+    description: 'Récupère une histoire et les chapitres associés',
+  });
 };
