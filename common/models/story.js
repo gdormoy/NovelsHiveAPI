@@ -50,7 +50,17 @@ module.exports = function(Story) {
 
   Story.getStoryAndChaptersById = function (id, cb) {
     console.log('Entering Story.getStoryAndChaptersById');
-    Story.findById(id, {include: {relation: 'storyChapters', scope: {where: {online: true}}}}, function (err, instance) {
+    Story.findById(id, {
+      include: {
+        relation: 'storyChapters',
+        scope: {
+          fields: ['title', 'number'],
+          where: {
+            online: true
+          }
+        }
+      }
+      }, function (err, instance) {
       console.log(instance);
 
       cb(null, instance);
