@@ -62,6 +62,9 @@ module.exports = function(Story) {
           scope: {
             fields: ['title', 'number', 'id', 'online']
           }
+        },
+        {
+          relation: 'storyKind'
         }
       ]
     };
