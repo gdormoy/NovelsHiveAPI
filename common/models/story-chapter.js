@@ -11,13 +11,20 @@ module.exports = function(Storychapter) {
     };
 
     Storychapter.find(filterParams, function (err, instance) {
+      let chapterFound = false;
       let counter = 0;
       for (let i = 0; i < instance.length; ++i) {
-        if (instance[i].id !== params.id) {
+        if (instance[i].id === params.id) {
+          chapterFound = true;
+        }else{
           ++counter;
         }
       }
-      params.number = counter + 1;
+
+      if (chapterFound) {
+        params.number = counter + 1;
+      }
+
       context.args.data = params;
       next();
     });
