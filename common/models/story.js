@@ -49,19 +49,32 @@ module.exports = function(Story) {
   });
 
   Story.getStoryAndChaptersById = function (id, cb) {
-    console.log('Entering Story.getStoryAndChaptersById');
-    Story.findById(id, {
-      include: {
-        relation: 'storyChapters',
-        scope: {
-          fields: ['title', 'number'],
-          where: {
-            online: true
+    let filter = {
+      include: [
+        {
+          relation: 'user',
+          scope: {
+            fields: ['id', 'username']
+          }
+        },
+        {
+          relation: 'storyChapters',
+          scope: {
+            fields: ['title', 'number', 'id', 'online']
           }
         }
-      }
-      }, function (err, instance) {
+      ]
+    };
+
+    console.log('Entering Story.getStoryAndChaptersById');
+    Story.findById(id, filter, function (err, instance) {
       console.log(instance);
+
+      instance.storyChapters().forEach((chapter) => {
+        if (chapter.online === false) {
+          chapter.title = '[UNPUBLISHED] ' + chapter.title;
+        }
+      });
 
       cb(null, instance);
     })
