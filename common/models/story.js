@@ -47,4 +47,44 @@ module.exports = function(Story) {
     http: {path: '/:id/storyTags', verb: 'get'},
     description: 'Récupère les tags associés à une histoire',
   });
+
+  Story.getStoryAndChaptersById = function (id, cb) {
+    let filter = {
+      include: [
+        {
+          relation: 'user',
+          scope: {
+            fields: ['id', 'username']
+          }
+        },
+        {
+          relation: 'storyChapters',
+          scope: {
+            fields: ['title', 'number', 'id', 'online']
+          }
+        }
+      ]
+    };
+
+    console.log('Entering Story.getStoryAndChaptersById');
+    Story.findById(id, filter, function (err, instance) {
+      console.log(instance);
+
+      instance.storyChapters().forEach((chapter) => {
+        if (chapter.online === false) {
+          chapter.title = '[UNPUBLISHED] ' + chapter.title;
+        }
+      });
+
+      cb(null, instance);
+    })
+  };
+
+  Story.remoteMethod('getStoryAndChaptersById', {
+    // eslint-disable-next-line max-len
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the story'},
+    returns: {arg: 'story', type: 'string'},
+    http: {path: '/:id/chapters', verb: 'get'},
+    description: 'Récupère une histoire et les chapitres associés',
+  });
 };
