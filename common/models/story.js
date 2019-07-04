@@ -48,7 +48,8 @@ module.exports = function(Story) {
     description: 'Récupère les tags associés à une histoire',
   });
 
-  Story.getStoryAndChaptersById = function (id, cb) {
+  Story.getStoryAndChaptersById = function (id, connectedUserId, cb) {
+    console.log(id, connectedUserId);
     let filter = {
       include: [
         {
@@ -65,6 +66,14 @@ module.exports = function(Story) {
         },
         {
           relation: 'storyKind'
+        },
+        {
+          relation: 'favorites',
+          scope: {
+            where: {
+              userId: connectedUserId
+            }
+          }
         }
       ]
     };
@@ -85,7 +94,10 @@ module.exports = function(Story) {
 
   Story.remoteMethod('getStoryAndChaptersById', {
     // eslint-disable-next-line max-len
-    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the story'},
+    accepts: [
+      {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the story'},
+      {arg: 'userId', type: 'number', http: {source: 'query'}, required: true, description: 'Id of the connected user'}
+    ],
     returns: {arg: 'story', type: 'string'},
     http: {path: '/:id/chapters', verb: 'get'},
     description: 'Récupère une histoire et les chapitres associés',
