@@ -101,6 +101,25 @@ module.exports = function(User) {
         '<tr>' +
           '<td>Publication Date:</td>' +
           '<td>' + jsonObject.stories[counter].publication_date + '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td>Synopsis:</td>' +
+        '<td>' + jsonObject.stories[counter].synopsis + '</td>' +
+        '</tr>';
+    }
+
+    htmlToJson += '</table></td></tr>' +
+      '<tr>' +
+      '<td>Favorites:</td>' +
+      '</tr>' +
+      '<tr>' +
+      '<td></td>' +
+      '<td><table cellspacing="10">';
+
+    for (let counter2 = 0; counter2 < jsonObject.favorites.length; counter2++) {
+      htmlToJson += '' +
+        '<tr>' +
+        '<td>' + jsonObject.favorites[counter2].story.title + '</td>' +
         '</tr>';
     }
 
@@ -135,7 +154,7 @@ module.exports = function(User) {
    */
   User.getGDPRInformations = function(id, cb) {
     // eslint-disable-next-line max-len
-    User.findById(id, {include: ['stories', 'publishedCommentaries']}, function(err, instance) {
+    User.findById(id, {include: ['stories', 'publishedCommentaries', {favorites: 'story'}]}, function(err, instance) {
       let tmp = {};
       let jsonStr;
       let result = {};
@@ -209,5 +228,38 @@ module.exports = function(User) {
     returns: {arg: 'stories', type: 'string'},
     http: {path: '/:id/favoriteStories', verb: 'get'},
     description: 'Récupère les histoires mises en favoris par un utilisateur',
+  });
+
+  // TODO Delete All element about the user
+
+  User.deleteAllAboutUser = function(id, cb) {
+    User.findById(id, {include: [{stories: 'storyChapters'}, {favorites: 'story'}]}, function(err, instance) {
+      let tmp = {};
+      let jsonStr, result;
+      tmp['user'] = instance;
+      jsonStr = JSON.stringify(tmp);
+      result = JSON.parse(jsonStr);
+      result.user.stories.forEach(function(story) {
+        story.storyChapters.forEach(function(chapter) {
+          let Chapter = app.models.Story_chapter;
+          Chapter.destroyById(chapter.id, null);
+        })
+        let Story = app.models.Story;
+        Story.destroyById(story.id, null);
+      });
+      result.user.publishedCommentaries.forEach(function(comment) {
+        let Comment = app.models.Published_commentary;
+        Comment.destroyById(comment.id, null);
+      });
+      User.destroyById(id, null)
+      cb(null, instance);
+    });
+  };
+
+  User.remoteMethod('deleteAllAboutUser', {
+    // eslint-disable-next-line max-len
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
+    http: {path: '/:id/deleteAllAboutUser', verb: 'delete'},
+    description: 'Détruit toutes les informations concernant le user',
   });
 };
