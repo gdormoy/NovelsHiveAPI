@@ -78,7 +78,6 @@ module.exports = function(Story) {
       ]
     };
 
-    console.log('Entering Story.getStoryAndChaptersById');
     Story.findById(id, filter, function (err, instance) {
       console.log(instance);
 

@@ -38,6 +38,23 @@ module.exports = function(Storychapter) {
     Storychapter.getChapterLocationInStory(context, storyChapterInstance, next);
   });
 
+  Storychapter.updateStory = function (context, storyChapterInstance, next) {
+    let Story = Storychapter.app.models.Story;
+
+    Story.findById(context.args.data.storyId, {}, function (err, instance) {
+      instance.updateAttributes({
+        "update_date": new Date()
+      }, next);
+    })
+  };
+
+  Storychapter.beforeRemote('create', function(context, storyChapterInstance, next) {
+    Storychapter.updateStory(context, storyChapterInstance, next);
+  });
+
+  Storychapter.beforeRemote('prototype.patchAttributes', function(context, storyChapterInstance, next) {
+    Storychapter.updateStory(context, storyChapterInstance, next);
+  });
 
   Storychapter.getChaptersForReading = function (id, cb) {
     Storychapter.findById(id, {include: {story: 'storyChapters'}}, function(err, data) {
