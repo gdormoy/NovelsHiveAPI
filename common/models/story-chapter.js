@@ -39,20 +39,22 @@ module.exports = function(Storychapter) {
   });
 
   Storychapter.updateStory = function (context, storyChapterInstance, next) {
+    console.log(context.instance);
+
+    if (context.instance === undefined || !context.instance.online) { //Update the 'update_date' of the story only if the chapter is published
+      return next();
+    }
+
     let Story = Storychapter.app.models.Story;
 
     Story.findById(context.args.data.storyId, {}, function (err, instance) {
       instance.updateAttributes({
-        "update_date": new Date()
+        "update_date": context.instance.update_date
       }, next);
     })
   };
 
-  Storychapter.beforeRemote('create', function(context, storyChapterInstance, next) {
-    Storychapter.updateStory(context, storyChapterInstance, next);
-  });
-
-  Storychapter.beforeRemote('prototype.patchAttributes', function(context, storyChapterInstance, next) {
+  Storychapter.afterRemote('prototype.patchAttributes', function(context, storyChapterInstance, next) {
     Storychapter.updateStory(context, storyChapterInstance, next);
   });
 
