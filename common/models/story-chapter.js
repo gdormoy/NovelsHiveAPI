@@ -58,8 +58,24 @@ module.exports = function(Storychapter) {
     Storychapter.updateStory(context, storyChapterInstance, next);
   });
 
-  Storychapter.getChaptersForReading = function (id, cb) {
-    Storychapter.findById(id, {include: {story: 'storyChapters'}}, function(err, data) {
+  Storychapter.getChaptersForReading = function (id, userId, cb) {
+    let filter = {
+      include: {
+        story: [
+          'storyChapters',
+          {
+            relation: 'favorites',
+            scope: {
+              where: {
+                userId: userId
+              }
+            }
+          }
+        ]
+      }
+    };
+
+    Storychapter.findById(id, filter, function(err, data) {
       let instance = data.toJSON();
 
       let result = {};
@@ -70,6 +86,11 @@ module.exports = function(Storychapter) {
       result.previousChapter = {};
       result.nextChapter = {};
 
+      let favorite = instance.story.favorites[0];
+
+      result.favoriteId = favorite === undefined ? undefined : favorite.id;
+      result.storyId = instance.id;
+
       result.previousChapter.id = instance.number === 1 ? null : instance.story.storyChapters[parseInt(instance.number) - 2].id;
       let nextChapter = instance.story.storyChapters[parseInt(instance.number)];
       result.nextChapter.id = nextChapter === undefined ? null : nextChapter.id;
@@ -79,7 +100,10 @@ module.exports = function(Storychapter) {
   };
 
   Storychapter.remoteMethod('getChaptersForReading', {
-    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the chapter to read'},
+    accepts: [
+      {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the chapter to read'},
+      {arg: 'userId', type: 'number', http: {source: 'query'}, required: true, description: 'Id of the connected user'}
+    ],
     returns: {arg: 'chapter', type: 'string'},
     http: {path: '/:id/read', verb: 'get'},
     description: 'Récupère le chapitre pour la lecture',
