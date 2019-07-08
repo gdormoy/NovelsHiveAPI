@@ -15,14 +15,6 @@ module.exports = function(Favorite) {
       console.log(instance);
 
       return next();
-
-      if (instance === null) {
-        let error = new Error('User have not the story in favorites');
-        error.statusCode = 404;
-        return next(error);
-      } else {
-        next()
-      }
     });
   });
 };
