@@ -12,7 +12,11 @@ module.exports = function(Favorite) {
     };
 
     Favorite.findOne(requestFilter, function (err, instance) {
-      if (instance.length > 0) {
+      console.log(instance);
+
+      return next();
+
+      if (instance === null) {
         let error = new Error('User have not the story in favorites');
         error.statusCode = 404;
         return next(error);
