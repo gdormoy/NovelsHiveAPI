@@ -59,11 +59,10 @@ module.exports = function(Story) {
           };
 
           StoryHasStoryTag.findOrCreate({where: newRelation}, newRelation, function (err, instance, created) {
-            console.log('created ? ' + created);
-            console.log(instance);
           });
         });
-    })
+    });
+    next();
   });
 
   Story.getStoryTags = function(id, cb) {
