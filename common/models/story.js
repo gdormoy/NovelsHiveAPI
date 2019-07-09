@@ -3,19 +3,6 @@
 let app = require('../../server/server');
 
 module.exports = function(Story) {
-  // Story.createStory = function(data, cb) {
-  //   console.log('Creating a story');
-  //   console.log(data);
-  //   cb();
-  // };
-  //
-  // Story.remoteMethod('createStory', {
-  //   accepts: {arg: 'data', type: 'object', http: {source: 'body'}, required: true, description: 'Model instance data'},
-  //   returns: {arg: 'story', type: 'string'},
-  //   http: {path: '/', verb: 'post'},
-  //   description: 'Create an instance of story and tags',
-  // });
-
   Story.beforeRemote('create', function(context, storyInstance, next) {
     let requestParams = context.args.data;
 
