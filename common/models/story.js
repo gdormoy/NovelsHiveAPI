@@ -1,6 +1,21 @@
 'use strict';
 
+let app = require('../../server/server');
+
 module.exports = function(Story) {
+  // Story.createStory = function(data, cb) {
+  //   console.log('Creating a story');
+  //   console.log(data);
+  //   cb();
+  // };
+  //
+  // Story.remoteMethod('createStory', {
+  //   accepts: {arg: 'data', type: 'object', http: {source: 'body'}, required: true, description: 'Model instance data'},
+  //   returns: {arg: 'story', type: 'string'},
+  //   http: {path: '/', verb: 'post'},
+  //   description: 'Create an instance of story and tags',
+  // });
+
   Story.beforeRemote('create', function(context, storyInstance, next) {
     let requestParams = context.args.data;
 
@@ -21,6 +36,47 @@ module.exports = function(Story) {
         next()
       }
     });
+  });
+
+  Story.afterRemote('create', function(context, storyInstance, next) {
+    let storyId = context.result.id;
+
+    let tags = context.result.storyTags.map(tag => {
+      tag = tag.trim().toLowerCase();
+      tag = tag.charAt(0).toUpperCase() + tag.slice(1);
+
+      return tag;
+    });
+
+    let StoryHasStoryTag = Story.app.models.StoryHasStoryTag;
+    let StoryTag = StoryHasStoryTag.app.models.StoryTag;
+
+    tags.forEach(storyTag => {
+      let findFilter = {
+        where: {
+          name: storyTag
+        }
+      };
+
+      StoryTag.find(findFilter)
+        .then(foundStoryTag => {
+          if (foundStoryTag.length > 0)
+            return new Promise((resolve, reject) => resolve(foundStoryTag[0]));
+
+          return StoryTag.create({name: storyTag})
+        })
+        .then(storyTag => {
+          let newRelation = {
+            storyId: storyId,
+            storyTagId: storyTag.id
+          };
+
+          StoryHasStoryTag.findOrCreate({where: newRelation}, newRelation, function (err, instance, created) {
+            console.log('created ? ' + created);
+            console.log(instance);
+          });
+        });
+    })
   });
 
   Story.getStoryTags = function(id, cb) {
