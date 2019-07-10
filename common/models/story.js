@@ -1,6 +1,7 @@
 'use strict';
 
 let app = require('../../server/server');
+let _ = require('lodash');
 
 module.exports = function(Story) {
   Story.beforeRemote('create', function(context, storyInstance, next) {
@@ -90,8 +91,7 @@ module.exports = function(Story) {
     description: 'Récupère les tags associés à une histoire',
   });
 
-  Story.getStoryAndChaptersById = function (id, connectedUserId, cb) {
-    console.log(id, connectedUserId);
+  Story.getStoryAndChaptersById = function (id, connectedUserId, filterParam, cb) {
     let filter = {
       include: [
         {
@@ -120,9 +120,15 @@ module.exports = function(Story) {
       ]
     };
 
-    Story.findById(id, filter, function (err, instance) {
-      console.log(instance);
+    function customizer(objValue, srcValue) {
+      if (_.isArray(objValue)) {
+        return objValue.concat(srcValue);
+      }
+    }
 
+    let result = _.mergeWith(filter, filterParam, customizer);
+
+    Story.findById(id, result, function (err, instance) {
       instance.storyChapters().forEach((chapter) => {
         if (chapter.online === false) {
           chapter.title = '[UNPUBLISHED] ' + chapter.title;
@@ -137,7 +143,8 @@ module.exports = function(Story) {
     // eslint-disable-next-line max-len
     accepts: [
       {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the story'},
-      {arg: 'userId', type: 'number', http: {source: 'query'}, required: true, description: 'Id of the connected user'}
+      {arg: 'userId', type: 'number', http: {source: 'query'}, required: true, description: 'Id of the connected user'},
+      {arg: 'filter', type: 'object', http: {source: 'query'}, required: false, description: 'Filter'}
     ],
     returns: {arg: 'story', type: 'string'},
     http: {path: '/:id/chapters', verb: 'get'},
