@@ -29,6 +29,7 @@
     "name": "imageStorage",
     "connector": "loopback-component-storage",
     "provider": "filesystem",
-    "root": "storage/images"
+    "root": "storage/images",
+    "nameConflict": "makeUnique"
   }
 }
