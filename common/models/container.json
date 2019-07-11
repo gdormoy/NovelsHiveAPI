@@ -1,6 +1,6 @@
 {
   "name": "Container",
-  "plural": "ontainers",
+  "plural": "containers",
   "base": "Model",
   "idInjection": true,
   "options": {
@@ -9,6 +9,13 @@
   "properties": {},
   "validations": [],
   "relations": {},
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": {}
 }
