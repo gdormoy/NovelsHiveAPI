@@ -101,5 +101,9 @@
   "Story_has_story_tag": {
     "dataSource": "mysql",
     "public": true
+  },
+  "Container": {
+    "dataSource": "imageStorage",
+    "public": true
   }
 }
