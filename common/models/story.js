@@ -66,6 +66,17 @@ module.exports = function(Story) {
     next();
   });
 
+  Story.afterRemote('create', function(context, storyInstance, next) {
+    let storyId = context.result.id;
+    let betaReaders = context.result.betaReaders().map(betaReader => {
+      return {storyId: storyId, userId: betaReader.id}
+    });
+
+    Story.app.models.BetaReader.create(betaReaders);
+
+    next();
+  });
+
   Story.getStoryTags = function(id, cb) {
     // eslint-disable-next-line max-len
     Story.findById(id, {include: {storyHasStoryTags: 'storyTag'}}, function(err, instance) {
