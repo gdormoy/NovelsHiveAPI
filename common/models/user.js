@@ -37,7 +37,12 @@ module.exports = function(User) {
     console.log('id : ' + id);
     // eslint-disable-next-line max-len
     User.findById(id, {include: {stories: 'storyChapters'}}, function(err, instance) {
-      console.log(instance);
+      instance.stories().forEach(story => {
+        if (story.panel !== null) {
+          story.panel = JSON.stringify(User.app.models.Container.getFileContent('storyImage', story.panel));
+        }
+      });
+
       cb(null, instance);
     });
   };
