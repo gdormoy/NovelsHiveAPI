@@ -85,6 +85,12 @@ module.exports = function(Storychapter) {
 
       result.previousChapter = {};
       result.nextChapter = {};
+      result.storyChapters = instance.story.storyChapters;
+      result.storyChapters.forEach((chapter) => {
+        if (chapter.online === false) {
+          chapter.title = '[UNPUBLISHED] ' + chapter.title;
+        }
+      });
 
       let favorite = instance.story.favorites[0];
 

@@ -34,7 +34,6 @@ module.exports = function(User) {
   });
 
   User.getChapters = function(id, cb) {
-    console.log('id : ' + id);
     // eslint-disable-next-line max-len
     User.findById(id, {include: {stories: 'storyChapters'}}, function(err, instance) {
       instance.stories().forEach(story => {
