@@ -233,24 +233,34 @@ module.exports = function(User) {
   // TODO Delete All element about the user
 
   User.deleteAllAboutUser = function(id, cb) {
-    User.findById(id, {include: [{stories: 'storyChapters'}, {favorites: 'story'}]}, function(err, instance) {
+    User.findById(id, {include: [{stories: 'storyChapters'}, {favorites: 'story'}, 'betaReaders']}, function(err, instance) {
       let tmp = {};
       let jsonStr, result;
       tmp['user'] = instance;
       jsonStr = JSON.stringify(tmp);
       result = JSON.parse(jsonStr);
-      result.user.stories.forEach(function(story) {
-        story.storyChapters.forEach(function(chapter) {
-          let Chapter = app.models.Story_chapter;
-          Chapter.destroyById(chapter.id, null);
-        })
-        let Story = app.models.Story;
-        Story.destroyById(story.id, null);
-      });
-      result.user.publishedCommentaries.forEach(function(comment) {
-        let Comment = app.models.Published_commentary;
-        Comment.destroyById(comment.id, null);
-      });
+      if (result.user.stories != undefined) {
+        result.user.stories.forEach(function(story) {
+          story.storyChapters.forEach(function(chapter) {
+            let Chapter = app.models.Story_chapter;
+            Chapter.destroyById(chapter.id, null);
+          })
+          let Story = app.models.Story;
+          Story.destroyById(story.id, null);
+        });
+      }
+      if (result.user.publishedCommentaries != undefined) {
+        result.user.publishedCommentaries.forEach(function(comment) {
+          let Comment = app.models.Published_commentary;
+          Comment.destroyById(comment.id, null);
+        });
+      }
+      if (result.user.betaReaders != undefined) {
+        result.user.betaReaders.forEach(function(reader) {
+          let Reader = app.models.Beta_reader;
+          Reader.destroyById(reader.id, null);
+        });
+      }
       User.destroyById(id, null)
       cb(null, instance);
     });
