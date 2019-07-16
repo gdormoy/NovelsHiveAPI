@@ -233,20 +233,47 @@ module.exports = function(User) {
   // TODO Delete All element about the user
 
   User.deleteAllAboutUser = function(id, cb) {
-    User.findById(id, {include: [{stories: 'storyChapters'}, {favorites: 'story'}, 'betaReaders']}, function(err, instance) {
+    User.findById(id, {include: [{stories: 'storyChapters'}, 'favorites', 'betaReaders']}, function(err, instance) {
       let tmp = {};
       let jsonStr, result;
       tmp['user'] = instance;
       jsonStr = JSON.stringify(tmp);
       result = JSON.parse(jsonStr);
+      if (result.user.favorites != undefined) {
+        result.user.favorites.forEach(function(favorite) {
+          let Fav = app.models.Favorite;
+          Fav.destroyById(favorite.id, null);
+        });
+      }
       if (result.user.stories != undefined) {
         result.user.stories.forEach(function(story) {
-          story.storyChapters.forEach(function(chapter) {
-            let Chapter = app.models.Story_chapter;
-            Chapter.destroyById(chapter.id, null);
-          })
+          if (story.storyChapters != undefined) {
+            story.storyChapters.forEach(function(chapter) {
+              let Chapter = app.models.Story_chapter;
+              Chapter.destroyById(chapter.id, null);
+            });
+          }
           let Story = app.models.Story;
-          Story.destroyById(story.id, null);
+          Story.findById(story.id, {include: ['betaReaders', 'favorites']}, function (err, instance) {
+            let tmp = {}
+            let jsonstr, result;
+            tmp['story'] = instance;
+            jsonStr = JSON.stringify(tmp);
+            result = JSON.parse(jsonStr);
+            if (result.story.betaReaders != undefined) {
+              result.story.betaReaders.forEach(function(reader) {
+                let Reader = app.models.Beta_reader;
+                Reader.destroyById(reader.id, null);
+              });
+            }
+            if (result.story.favorites != undefined) {
+              result.story.favorites.forEach(function(favorite) {
+                let Favorite = app.models.Favorite;
+                Favorite.destroyById(favorite.id, null);
+              });
+            }
+            Story.destroyById(story.id, null);
+          });
         });
       }
       if (result.user.publishedCommentaries != undefined) {
