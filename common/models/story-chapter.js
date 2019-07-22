@@ -82,6 +82,7 @@ module.exports = function(Storychapter) {
       result.title = instance.title;
       result.text = instance.text;
       result.storyTitle = instance.story.title;
+      result.author = instance.story.userId;
 
       result.previousChapter = {};
       result.nextChapter = {};
