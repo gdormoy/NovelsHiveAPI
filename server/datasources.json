@@ -24,5 +24,12 @@
       }
     ],
     "connector": "mail"
+  },
+  "imageStorage": {
+    "name": "imageStorage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "storage/images",
+    "nameConflict": "makeUnique"
   }
 }
