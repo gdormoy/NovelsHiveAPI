@@ -20,4 +20,6 @@ npm-debug.log
 server/config.local.js
 server/datasources.local.js
 
-storage/
+storage/*.pdf
+storage/images/storyImage/*
+!storage/images/storyImage/.gitkeep
