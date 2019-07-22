@@ -105,6 +105,25 @@ module.exports = function(User) {
         '<tr>' +
           '<td>Publication Date:</td>' +
           '<td>' + jsonObject.stories[counter].publication_date + '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td>Synopsis:</td>' +
+        '<td>' + jsonObject.stories[counter].synopsis + '</td>' +
+        '</tr>';
+    }
+
+    htmlToJson += '</table></td></tr>' +
+      '<tr>' +
+      '<td>Favorites:</td>' +
+      '</tr>' +
+      '<tr>' +
+      '<td></td>' +
+      '<td><table cellspacing="10">';
+
+    for (let counter2 = 0; counter2 < jsonObject.favorites.length; counter2++) {
+      htmlToJson += '' +
+        '<tr>' +
+        '<td>' + jsonObject.favorites[counter2].story.title + '</td>' +
         '</tr>';
     }
 
@@ -139,7 +158,7 @@ module.exports = function(User) {
    */
   User.getGDPRInformations = function(id, cb) {
     // eslint-disable-next-line max-len
-    User.findById(id, {include: ['stories', 'publishedCommentaries']}, function(err, instance) {
+    User.findById(id, {include: ['stories', 'publishedCommentaries', {favorites: 'story'}]}, function(err, instance) {
       let tmp = {};
       let jsonStr;
       let result = {};
@@ -213,5 +232,75 @@ module.exports = function(User) {
     returns: {arg: 'stories', type: 'string'},
     http: {path: '/:id/favoriteStories', verb: 'get'},
     description: 'Récupère les histoires mises en favoris par un utilisateur',
+  });
+
+  // TODO Delete All element about the user
+
+  User.deleteAllAboutUser = function(id, cb) {
+    User.findById(id, {include: [{stories: 'storyChapters'}, 'favorites', 'betaReaders']}, function(err, instance) {
+      let tmp = {};
+      let jsonStr, result;
+      tmp['user'] = instance;
+      jsonStr = JSON.stringify(tmp);
+      result = JSON.parse(jsonStr);
+      if (result.user.favorites != undefined) {
+        result.user.favorites.forEach(function(favorite) {
+          let Fav = app.models.Favorite;
+          Fav.destroyById(favorite.id, null);
+        });
+      }
+      if (result.user.stories != undefined) {
+        result.user.stories.forEach(function(story) {
+          if (story.storyChapters != undefined) {
+            story.storyChapters.forEach(function(chapter) {
+              let Chapter = app.models.Story_chapter;
+              Chapter.destroyById(chapter.id, null);
+            });
+          }
+          let Story = app.models.Story;
+          Story.findById(story.id, {include: ['betaReaders', 'favorites']}, function (err, instance) {
+            let tmp = {}
+            let jsonstr, result;
+            tmp['story'] = instance;
+            jsonStr = JSON.stringify(tmp);
+            result = JSON.parse(jsonStr);
+            if (result.story.betaReaders != undefined) {
+              result.story.betaReaders.forEach(function(reader) {
+                let Reader = app.models.Beta_reader;
+                Reader.destroyById(reader.id, null);
+              });
+            }
+            if (result.story.favorites != undefined) {
+              result.story.favorites.forEach(function(favorite) {
+                let Favorite = app.models.Favorite;
+                Favorite.destroyById(favorite.id, null);
+              });
+            }
+            Story.destroyById(story.id, null);
+          });
+        });
+      }
+      if (result.user.publishedCommentaries != undefined) {
+        result.user.publishedCommentaries.forEach(function(comment) {
+          let Comment = app.models.Published_commentary;
+          Comment.destroyById(comment.id, null);
+        });
+      }
+      if (result.user.betaReaders != undefined) {
+        result.user.betaReaders.forEach(function(reader) {
+          let Reader = app.models.Beta_reader;
+          Reader.destroyById(reader.id, null);
+        });
+      }
+      User.destroyById(id, null)
+      cb(null, instance);
+    });
+  };
+
+  User.remoteMethod('deleteAllAboutUser', {
+    // eslint-disable-next-line max-len
+    accepts: {arg: 'id', type: 'number', http: {source: 'path'}, required: true, description: 'Id of the user'},
+    http: {path: '/:id/deleteAllAboutUser', verb: 'delete'},
+    description: 'Détruit toutes les informations concernant le user',
   });
 };
